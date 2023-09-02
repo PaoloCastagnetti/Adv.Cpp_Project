@@ -10,7 +10,6 @@ struct Chunk {
 	unsigned char* pData_;
 	unsigned char firstAvailableBlock_; // holds the index of the first block available in this chunk
 	unsigned char blocksAvailable_; // the number of blocks available in this chunk
-	inline bool HasBlock(void* p, ::std::size_t chunkLength) const;
 
 	//Methods
 	bool Init(std::size_t blockSize, unsigned char blocks);
