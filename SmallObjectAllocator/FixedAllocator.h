@@ -18,7 +18,7 @@ public:
 
     bool Deallocate(void* p, Chunk* hint);
 
-	inline std::size_t BlockSize() const;
+	inline std::size_t BlockSize();
 
     bool TrimEmptyChunk(void);
 

@@ -18,7 +18,7 @@ FixedAllocator::~FixedAllocator() {
 #pragma endregion
 
 #pragma region Inline functions
-inline std::size_t FixedAllocator::BlockSize() const {
+inline std::size_t FixedAllocator::BlockSize() {
     return blockSize_;
 }
 #pragma endregion
