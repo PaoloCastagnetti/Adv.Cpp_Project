@@ -1,8 +1,9 @@
+#include "pch.h"
 #include "Chunk.h"
 
 #pragma region Inline functions
 
-inline bool Chunk::HasBlock(void* p, ::std::size_t chunkLength) const {
+inline bool Chunk::HasBlock(void* p, std::size_t chunkLength) const {
     unsigned char* pc = static_cast<unsigned char*>(p);
     return (pData_ <= pc) && (pc < pData_ + chunkLength);
 }

@@ -1,6 +1,21 @@
 #include "pch.h"
 #include "SmallObjectAllocator.h"
 
+void* DefaultAllocator(std::size_t numBytes, bool doThrow);
+void DefaultDeallocator(void* p);
+
+#pragma region Inline functions
+inline std::size_t SmallObjectAllocator::GetOffset(std::size_t numBytes, std::size_t alignment) const {
+    const ::std::size_t alignExtra = alignment - 1;
+    return (numBytes + alignExtra) / alignment;
+}
+inline std::size_t SmallObjectAllocator::GetMaxObjectSize() const {
+    return maxSmallObjectSize_;
+}
+
+inline std::size_t SmallObjectAllocator::GetAlignment() const { return objectAlignSize_; }
+#pragma endregion
+
 SmallObjectAllocator::SmallObjectAllocator(std::size_t pageSize, std::size_t maxObjectSize, std::size_t objectAlignSize) :
     pool_(nullptr),
     maxSmallObjectSize_(maxObjectSize),
@@ -32,12 +47,6 @@ bool SmallObjectAllocator::TrimExcessMemory(void) {
 
     return found;
 }
-
-inline std::size_t SmallObjectAllocator::GetMaxObjectSize() const {
-    return maxSmallObjectSize_;
-}
-
-inline std::size_t SmallObjectAllocator::GetAlignment() const { return objectAlignSize_; }
 
 void* SmallObjectAllocator::Allocate(::std::size_t numBytes, bool doThrow) {
     if (numBytes > GetMaxObjectSize())
@@ -126,11 +135,6 @@ bool SmallObjectAllocator::IsCorrupt(void) const {
             return true;
     }
     return false;
-}
-
-inline std::size_t SmallObjectAllocator::GetOffset(std::size_t numBytes,std::size_t alignment) const{
-    const ::std::size_t alignExtra = alignment - 1;
-    return (numBytes + alignExtra) / alignment;
 }
 
 void* DefaultAllocator(std::size_t numBytes, bool doThrow) {

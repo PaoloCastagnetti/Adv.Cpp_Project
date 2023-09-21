@@ -1,10 +1,7 @@
-/**
- * @file FixedAllocator.cpp
- * @brief Implementation file for the FixedAllocator class.
- */
-
+#include "pch.h"
 #include "FixedAllocator.h"
 
+#pragma region Constructors
 FixedAllocator::FixedAllocator()
     : blockSize_(0)
     , numBlocks_(0)
@@ -18,6 +15,13 @@ FixedAllocator::~FixedAllocator() {
     for (ChunkIter i(chunks_.begin()); i != chunks_.end(); ++i)
         i->Release();
 }
+#pragma endregion
+
+#pragma region Inline functions
+inline std::size_t FixedAllocator::BlockSize() const {
+    return blockSize_;
+}
+#pragma endregion
 
 void FixedAllocator::Initialize(std::size_t blockSize, std::size_t pageSize) {
     assert(blockSize > 0);
@@ -179,7 +183,7 @@ bool FixedAllocator::Deallocate(void* p, Chunk* hint) {
     assert(CountEmptyChunks() < 2);
 
     Chunk* foundChunk = nullptr;
-    const std::size_t chunkLength = numBlocks_ * blockSize_;
+    std::size_t chunkLength = numBlocks_ * blockSize_;
     if ((nullptr != hint) && (hint->HasBlock(p, chunkLength)))
         foundChunk = hint;
     else if (deallocChunk_->HasBlock(p, chunkLength))
@@ -197,10 +201,6 @@ bool FixedAllocator::Deallocate(void* p, Chunk* hint) {
     assert(CountEmptyChunks() < 2);
 
     return true;
-}
-
-inline std::size_t FixedAllocator::BlockSize() const { 
-    return blockSize_; 
 }
 
 const Chunk* FixedAllocator::HasBlock(void* p) const {
@@ -310,7 +310,7 @@ Chunk* FixedAllocator::VicinityFind(void* p) const {
         return nullptr;
     assert(deallocChunk_);
 
-    const ::std::size_t chunkLength = numBlocks_ * blockSize_;
+    std::size_t chunkLength = numBlocks_ * blockSize_;
     Chunk* lo = deallocChunk_;
     Chunk* hi = deallocChunk_ + 1;
     const Chunk* loBound = &chunks_.front();

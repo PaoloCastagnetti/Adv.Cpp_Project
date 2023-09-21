@@ -119,7 +119,7 @@ struct Chunk {
 	 * @param[in] chunkLength The length of the memory chunk in bytes.
 	 * @return True if the pointer is within the chunk, false otherwise.
 	 */
-	inline bool HasBlock(void* p, ::std::size_t chunkLength) const;
+	inline bool HasBlock(void* p, std::size_t chunkLength) const;
 
 	/**
 	 * @brief Checks if a specific number of blocks are available.
