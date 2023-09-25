@@ -5,7 +5,7 @@
 // POD (Plain Old Data) structure
 // Structure defined inside FixedAllocator
 
-struct Chunk {
+struct SMALLOBJECTALLOCATOR_API Chunk {
 	//Parameters
 	unsigned char* pData_;
 	unsigned char firstAvailableBlock_; // holds the index of the first block available in this chunk

@@ -4,7 +4,7 @@
 #include <cassert>
 #include "Chunk.h"
 
-class FixedAllocator {
+class SMALLOBJECTALLOCATOR_API FixedAllocator {
 
 public:
 

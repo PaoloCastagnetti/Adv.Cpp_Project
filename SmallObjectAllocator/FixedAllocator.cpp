@@ -23,6 +23,11 @@ inline std::size_t FixedAllocator::BlockSize() {
 }
 #pragma endregion
 
+#pragma region Static intialization
+unsigned char FixedAllocator::MinObjectsPerChunk_ = 0;
+unsigned char FixedAllocator::MaxObjectsPerChunk_ = 32;
+#pragma endregion
+
 void FixedAllocator::Initialize(std::size_t blockSize, std::size_t pageSize) {
     assert(blockSize > 0);
     assert(pageSize >= blockSize);
