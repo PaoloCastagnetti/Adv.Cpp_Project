@@ -24,6 +24,12 @@
     <ClInclude Include="GeneralAllocator.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="RedBlackTree.hpp">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="BigObjectAllocator.hpp">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
