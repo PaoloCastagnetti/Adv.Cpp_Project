@@ -3,22 +3,24 @@
 
 #pragma region Constructors
 FixedAllocator::FixedAllocator()
-    : blockSize_(0)
-    , numBlocks_(0)
-    , chunks_(0)
-    , allocChunk_(nullptr)
-    , deallocChunk_(nullptr)
-    , emptyChunk_(nullptr) {
-}
+    : blockSize_(0)          // Initialize the block size to 0
+    , numBlocks_(0)          // Initialize the number of blocks to 0
+    , chunks_(0)             // Initialize the chunks pointer to nullptr
+    , allocChunk_(nullptr)   // Initialize the allocation chunk pointer to nullptr
+    , deallocChunk_(nullptr) // Initialize the deallocation chunk pointer to nullptr
+    , emptyChunk_(nullptr)   // Initialize the empty chunk pointer to nullptr
+{}
 
 FixedAllocator::~FixedAllocator() {
+    // Iterate through all the chunks in the chunks_ container
     for (ChunkIter i(chunks_.begin()); i != chunks_.end(); ++i)
+        // Call the Release() method on each chunk to release memory associated with it
         i->Release();
 }
 #pragma endregion
 
 #pragma region Inline functions
-inline std::size_t FixedAllocator::BlockSize() {
+inline std::size_t FixedAllocator::BlockSize() const{
     return blockSize_;
 }
 #pragma endregion

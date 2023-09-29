@@ -7,34 +7,104 @@
 class SMALLOBJECTALLOCATOR_API FixedAllocator {
 
 public:
+	//Constructors
 
+	/**
+	 * @brief Default constructor for the FixedAllocator class.
+	 *
+	 * This constructor initializes the FixedAllocator object with default values for its member variables.
+	 * These variables include the block size, the number of blocks, pointers to chunks, and allocation and deallocation chunk pointers.
+	 */
     FixedAllocator();
 
+	/**
+	 * @brief Destructor for the FixedAllocator class.
+	 *
+	 * This destructor is responsible for releasing the allocated memory chunks owned by the FixedAllocator object.
+	 * It iterates through all the chunks in the chunks_ container and calls the Release() method on each of them to release memory.
+	 */
     ~FixedAllocator();
 
+	//Methods
+
+	/**
+	 * @brief Initialize the FixedAllocator object with a given block size and page size.
+	 *
+	 * This method configures the FixedAllocator with the specified block size and page size.
+	 * It also validates that the provided values are within certain limits and sets the internal state accordingly.
+	 *
+	 * @param blockSize The size of each memory block in bytes.
+	 * @param pageSize The size of each memory page in bytes.
+	 */
     void Initialize(std::size_t blockSize, std::size_t pageSize);
 
+	/**
+	 * @brief Allocate a memory block from the FixedAllocator.
+	 *
+	 * This method allocates a memory block from the FixedAllocator.
+	 * It manages the allocation process by selecting an appropriate chunk
+	 * to allocate from or creating a new chunk if needed.
+	 *
+	 * @return A pointer to the allocated memory block, or nullptr if allocation fails.
+	 */
     void* Allocate(void);
 
+	/**
+	 * @brief Deallocate a memory block in the FixedAllocator.
+	 *
+	 * This method deallocates a memory block within the FixedAllocator. It manages the deallocation process
+	 * by finding the appropriate chunk to deallocate from based on the given hint or the memory address.
+	 *
+	 * @param p A pointer to the memory block to deallocate.
+	 * @param hint A hint to guide the deallocation process, or nullptr if no hint is provided.
+	 * @return true if the deallocation is successful, false otherwise.
+	 */
     bool Deallocate(void* p, Chunk* hint);
 
-	inline std::size_t BlockSize();
-
+	/**
+	 * @brief Trim an empty memory chunk from the FixedAllocator.
+	 *
+	 * This method removes an empty memory chunk from the FixedAllocator if one exists.
+	 * It ensures that only one empty chunk can exist at a time and manages the pointers accordingly.
+	 *
+	 * @return true if an empty chunk is successfully trimmed, false otherwise.
+	 */
     bool TrimEmptyChunk(void);
 
+	/**
+	 * @brief Trim the chunk list of the FixedAllocator to match its size to capacity.
+	 *
+	 * This method adjusts the size of the chunk list to match its capacity. It ensures that the
+	 * allocation and deallocation pointers are updated correctly after resizing the list.
+	 *
+	 * @return true if the chunk list is successfully trimmed, false otherwise.
+	 */
     bool TrimChunkList(void);
 
+	/**
+	 * @brief Count the number of empty chunks in the FixedAllocator.
+	 *
+	 * This method counts the number of empty chunks in the FixedAllocator.
+	 * Empty chunks are those with no available memory blocks for allocation.
+	 *
+	 * @return The number of empty chunks (0 or 1).
+	 */
     std::size_t CountEmptyChunks(void) const;
 
     bool IsCorrupt(void) const;
 
     const Chunk* HasBlock(void* p) const;
 
+	inline std::size_t BlockSize() const;
+
 private:
 
+	//Methods
 	void DoDeallocate(void* p);
 	bool MakeNewChunk(void);
 	Chunk* VicinityFind(void* p) const;
+
+	//Parameters
 
 	// Number of bytes in a single block within a Chunk.
 	std::size_t blockSize_;
