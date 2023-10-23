@@ -12,7 +12,6 @@ inline std::size_t SmallObjectAllocator::GetOffset(std::size_t numBytes, std::si
 inline std::size_t SmallObjectAllocator::GetMaxObjectSize() const {
     return maxSmallObjectSize_;
 }
-
 inline std::size_t SmallObjectAllocator::GetAlignment() const { return objectAlignSize_; }
 #pragma endregion
 
