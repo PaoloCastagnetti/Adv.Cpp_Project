@@ -11,9 +11,9 @@ class SMALLOBJECTALLOCATOR_API SmallObjectAllocator {
 		/**
 		 * @brief Constructs a SmallObjectAllocator with the specified parameters.
 		 *
-		 * @param pageSize The size of the memory page.
+		 * @param pageSize The size of the memory page (>blocksize).
 		 * @param maxObjectSize The maximum size of the small objects.
-		 * @param objectAlignSize The alignment size of the objects.
+		 * @param objectAlignSize The alignment size of the objects for the blocks.
 		 */
 		SmallObjectAllocator(std::size_t pageSize, std::size_t maxObjectSize, std::size_t objectAlignSize);
 
