@@ -91,17 +91,50 @@ public:
 	 */
     std::size_t CountEmptyChunks(void) const;
 
+	/**
+	 *  @brief Checks if the FixedAllocator is corrupted.
+	 *
+	 * @return Boolean value indicating whether the FixedAllocator is corrupted.
+	 */
     bool IsCorrupt(void) const;
 
+	/**
+	 * @brief Checks if the given memory address is within the range of any Chunk in the FixedAllocator.
+	 *
+	 * @param p Pointer to the memory address to be checked.
+	 * @return Pointer to the Chunk if the memory address is found within its range, otherwise nullptr.
+	 */
     const Chunk* HasBlock(void* p) const;
 
+	/**
+	 * @biref Retrieves the size of individual blocks managed by the FixedAllocator.
+	 *
+	 * @return The size of individual blocks in the FixedAllocator.
+	 */
 	inline std::size_t BlockSize() const;
 
 private:
 
 	//Methods
+
+	/**
+	 * @brief Deallocates the memory block pointed to by the given address.
+	 *
+	 * @param p Pointer to the memory address to deallocate.
+	 */
 	void DoDeallocate(void* p);
+	/**
+	 * @brief Creates a new Chunk in the FixedAllocator.
+	 *
+	 * @return Boolean value indicating the success of creating a new Chunk.
+	 */
 	bool MakeNewChunk(void);
+	/**
+	 * @brief Finds the Chunk in the vicinity of the given memory address.
+	 *
+	 * @param p Pointer to the memory address.
+	 * @return Pointer to the Chunk if found in the vicinity, otherwise nullptr.
+	 */
 	Chunk* VicinityFind(void* p) const;
 
 	//Parameters
