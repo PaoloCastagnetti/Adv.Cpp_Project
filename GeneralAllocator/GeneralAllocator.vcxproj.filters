@@ -27,7 +27,7 @@
     <ClInclude Include="RedBlackTree.hpp">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="BigObjectAllocator.hpp">
+    <ClInclude Include="BigObjectAllocator.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
@@ -39,6 +39,9 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="GeneralAllocator.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="BigObjectAllocator.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
