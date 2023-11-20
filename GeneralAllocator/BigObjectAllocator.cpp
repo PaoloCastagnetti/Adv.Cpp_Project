@@ -149,7 +149,6 @@ void BigObjectAllocator::AddNodeOnList(char* address, size_t size) {
 }
 
 void BigObjectAllocator::MergeNodeOnList(FreeBlock* nodeOnList, char* address, size_t size) {
-    FreeBlock* newNode = new FreeBlock();
     freeRBtree->Remove(nodeOnList->address, nodeOnList->size);
     if (nodeOnList->address > address) {
         nodeOnList->address = address;
@@ -159,12 +158,18 @@ void BigObjectAllocator::MergeNodeOnList(FreeBlock* nodeOnList, char* address, s
     freeRBtree->Insert(nodeOnList->address, nodeOnList->size);
 }
 void BigObjectAllocator::MergeNodeOnList(FreeBlock* nodeOnList, char* address, size_t size, FreeBlock* nodeNextOnList) {
-    FreeBlock* newNode = new FreeBlock();
     freeRBtree->Remove(nodeOnList->address, nodeOnList->size);
     freeRBtree->Remove(nodeNextOnList->address, nodeNextOnList->size);
     nodeOnList->size = nodeOnList->size + size + nodeNextOnList->size;
-    nodeNextOnList->next->pre = nodeOnList;
-    nodeOnList->next = nodeNextOnList->next;
+    if (nodeNextOnList->next != nullptr) {
+        nodeNextOnList->next->pre = nodeOnList;
+        nodeOnList->next = nodeNextOnList->next;
+        nodeNextOnList->next = nullptr;
+    }
+    else {
+        nodeOnList->next = nullptr;
+    }
+
     delete nodeNextOnList;
     freeRBtree->Insert(nodeOnList->address, nodeOnList->size);
 }
