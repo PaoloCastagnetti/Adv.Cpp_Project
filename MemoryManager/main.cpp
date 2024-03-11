@@ -1,4 +1,6 @@
-#include "GeneralAllocator.h"
-#include "SmallObjectAllocator.h"
-int main() {
+#include "MemoryManager.h"
+
+int main()
+{
+
 }
