@@ -6,11 +6,13 @@ void MemoryManager::Init()
 	smallObjAllocator = new SmallObjectAllocator(_smallObjPageSize, _smallObjTotalSize, _smallObjAlignSize);
 }
 
+
 void MemoryManager::Free()
 {
 	free(bigObjAllocator);
 	free(smallObjAllocator);
 }
+
 
 void* MemoryManager::Allocate(std::size_t size)
 {
@@ -29,6 +31,7 @@ void* MemoryManager::Allocate(std::size_t size)
 	}
 }
 
+
 void MemoryManager::Deallocate(void* ptr, std::size_t size)
 {
 	// In this case it utilizes the BigObjectAllocator
@@ -43,6 +46,7 @@ void MemoryManager::Deallocate(void* ptr, std::size_t size)
 		smallObjAllocator->Deallocate(ptr, size);
 	}
 }
+
 
 template<class NewT>
 NewT* MemoryManager::MM_New()
@@ -67,7 +71,7 @@ NewT* MemoryManager::MM_New()
 }
 
 template<class DeleteT>
-void MM_Delete(DeleteT* ptr)
+void MemoryManager::MM_Delete(DeleteT* ptr)
 {
 	// Call the default destructor for type DeleteT
 	ptr->~DeleteT();
@@ -88,19 +92,85 @@ void MM_Delete(DeleteT* ptr)
 	ptr = nullptr;
 }
 
-// TODO
+
 template<class NewT>
-NewT* MM_New_A(std::size_t array_size)
+NewT* MemoryManager::MM_New_A(std::size_t array_size)
 {
+	std::size_t arrayBytes = array_size * sizeof(char);
 
+	// Accounting for metadata size (1) and "size_t" size
+	arrayBytes += 1 + sizeof(std::size_t);
+
+	// Using BigObjectAllocator
+	if (arrayBytes >= _sizeThreshold)
+	{
+		unsigned char* ptr = (unsigned char*) bigObjAllocator->Allocate(arrayBytes);
+
+		// Metadata
+		*(std::size_t*) ptr = array_size;
+		*(ptr + 1) = sizeof(std::size_t);
+
+		NewT* newPtr = (NewT*) (ptr + 1 sizeof(std::size_t));
+
+		for (std::size_t i = 0; i < array_size; ++i)
+		{
+			newPtr[i] = NewT();
+		}
+
+		return newPtr;
+	}
+
+	// Using SmallObjectAllocator
+	else
+	{
+		unsigned char* ptr = (unsigned char*) smallObjAllocator->Allocate(arrayBytes);
+
+		// Metadata
+		*(std::size_t*) ptr = array_size;
+		*(ptr + 1) = 1;
+
+		NewT* newPtr = (NewT*) (ptr + 1 sizeof(std::size_t));
+
+		for (std::size_t i = 0; i < array_size; ++i)
+		{
+			newPtr[i] = NewT();
+		}
+
+		return newPtr;
+	}
 }
 
-// TODO
+
 template<class DeleteT>
-void MM_Delete_A(DeleteT* ptr)
+void MemoryManager::MM_Delete_A(DeleteT* ptr)
 {
+	// Take array length from metadata
+	unsigned char metadataSize = *((std::size_t*)ptr);
 
+	ptr = ptr - 1 - metadataSize; // Points now to the actual array
+
+	std::size_t arrayBytes = sizeof(DeleteT) * metadataSize + 1 + sizeof(std::size_t);
+
+	for (std::size_t i = 0; i < length; ++i)
+	{
+		pointer[i].~DeleteT();
+	}
+
+	// Using BigObjectAllocator
+	if (arrayBytes >= _sizeThreshold)
+	{
+		smallObjAllocator->Deallocate(ptr, arrayBytes);
+	}
+
+	// Using SmallObjectAllocator
+	else
+	{
+		bigObjAllocator->Deallocate(ptr, arrayBytes);
+	}
+
+	pointer = nullptr;
 }
+
 
 // SIZE_THRESHOLD GETTER & SETTER
 
