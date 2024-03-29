@@ -26,7 +26,6 @@
 class MemoryManager {
 public:
 	// no need for constructor in this class
-	MemoryManager() = delete;
 
 	// Instantiate SmallObjectAllocator and BigObjectAllocator
 	void Init();

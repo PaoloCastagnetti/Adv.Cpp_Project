@@ -2,14 +2,14 @@
 
 void MemoryManager::Init()
 {
-	bigObjAllocator = new BigObjectAllocator(_bigObjTotalSize);
-	smallObjAllocator = new SmallObjectAllocator(_smallObjPageSize, _smallObjTotalSize, _smallObjAlignSize);
+	//this->bigObjAllocator = new BigObjectAllocator(_bigObjTotalSize);
+	this->smallObjAllocator = new SmallObjectAllocator(_smallObjPageSize, _smallObjTotalSize, _smallObjAlignSize);
 }
 
 
 void MemoryManager::Free()
 {
-	free(bigObjAllocator);
+	//free(bigObjAllocator);
 	free(smallObjAllocator);
 }
 
@@ -19,7 +19,7 @@ void* MemoryManager::Allocate(std::size_t size)
 	// In this case it utilizes the BigObjectAllocator
 	if (size >= _sizeThreshold)
 	{
-		return bigObjAllocator->Allocate(size);
+		//return bigObjAllocator->Allocate(size);
 	}
 
 	// In this case it utilizes the SmallObjectAllocator
@@ -37,7 +37,7 @@ void MemoryManager::Deallocate(void* ptr, std::size_t size)
 	// In this case it utilizes the BigObjectAllocator
 	if (size >= _sizeThreshold)
 	{
-		bigObjAllocator->Deallocate(ptr, size);
+		//bigObjAllocator->Deallocate(ptr, size);
 	}
 
 	// In this case it utilizes the SmallObjectAllocator
@@ -54,10 +54,10 @@ NewT* MemoryManager::MM_New()
 	// In this case it utilizes the BigObjectAllocator
 	if (sizeof(NewT) >= _sizeThreshold)
 	{
-		NewT newPtr = (NewT*)bigObjAllocator->Allocate(sizeof(NewT));
-		new(newPtr) NewT();
+		//NewT newPtr = (NewT*)bigObjAllocator->Allocate(sizeof(NewT));
+		//new(newPtr) NewT();
 
-		return newPtr;
+		//return newPtr;
 	}
 
 	// In this case it utilizes the SmallObjectAllocator
@@ -79,7 +79,7 @@ void MemoryManager::MM_Delete(DeleteT* ptr)
 	// In this case it utilizes the BigObjectAllocator
 	if (sizeof(DeleteT) >= _sizeThreshold)
 	{
-		bigObjAllocator->Deallocate(ptr, sizeof(DeleteT));
+		//bigObjAllocator->Deallocate(ptr, sizeof(DeleteT));
 	}
 
 	// In this case it utilizes the SmallObjectAllocator
@@ -104,21 +104,21 @@ NewT* MemoryManager::MM_New_A(std::size_t array_size)
 	// Using BigObjectAllocator
 	if (arrayBytes >= _sizeThreshold)
 	{
-		unsigned char* ptr = (unsigned char*)bigObjAllocator->Allocate(arrayBytes);
+		//unsigned char* ptr = (unsigned char*)bigObjAllocator->Allocate(arrayBytes);
 
-		// Metadata
-		*(std::size_t*) ptr = array_size;
-		*(ptr + 1) = sizeof(std::size_t);
+		//// Metadata
+		//*(std::size_t*) ptr = array_size;
+		//*(ptr + 1) = sizeof(std::size_t);
 
-		unsigned char* newPtr = (ptr + 1 + sizeof(std::size_t));
-		newPtr = (NewT*)newPtr;
+		//unsigned char* newPtr = (ptr + 1 + sizeof(std::size_t));
+		//newPtr = (NewT*)newPtr;
 
-		for (std::size_t i = 0; i < array_size; ++i)
-		{
-			newPtr[i] = NewT();
-		}
+		//for (std::size_t i = 0; i < array_size; ++i)
+		//{
+		//	newPtr[i] = NewT();
+		//}
 
-		return newPtr;
+		//return newPtr;
 	}
 
 	// Using SmallObjectAllocator
@@ -161,7 +161,7 @@ void MemoryManager::MM_Delete_A(DeleteT* ptr)
 	// Using BigObjectAllocator
 	if (arrayBytes >= _sizeThreshold)
 	{
-		smallObjAllocator->Deallocate(ptr, arrayBytes);
+		//smallObjAllocator->Deallocate(ptr, arrayBytes);
 	}
 
 	// Using SmallObjectAllocator
