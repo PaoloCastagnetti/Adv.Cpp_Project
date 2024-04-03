@@ -1,10 +1,8 @@
 #pragma once
-#include "framework.h"
-#include <string>
-#include <vector>
 #include <iostream>
 #include "RedBlackTree.hpp"
 #include <cstddef>
+#include <vector>
 
 class FreeBlock {
 public:
@@ -18,20 +16,19 @@ public:
             delete next;
     }
 };
-
-class GENERALALLOCATOR_API GeneralAllocator {
+class BigObjectAllocator {
 public:
     /*
         @brief
         create the block of memory, the RedBlackTree and the list
         @param totalSize the total size of the memory block
     */
-    GeneralAllocator(size_t totalSize);
+    BigObjectAllocator(size_t totalSize);
     /*
         @brief
         free all the resources
     */
-    ~GeneralAllocator();
+    ~BigObjectAllocator();
 
     /*
         @brief
@@ -91,3 +88,5 @@ private:
     FreeBlock* firstNode;
     RedBlackTree<char*, size_t>* freeRBtree;
 };
+
+

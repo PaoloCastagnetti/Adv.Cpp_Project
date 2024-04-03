@@ -139,11 +139,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BigObjectAllocator.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GeneralAllocator.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="RedBlackTree.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BigObjectAllocator.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="GeneralAllocator.cpp" />
     <ClCompile Include="pch.cpp">

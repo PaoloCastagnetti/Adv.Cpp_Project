@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "GeneralAllocator.h"
+#include "BigObjectAllocator.h"
 
-GeneralAllocator::GeneralAllocator(size_t totalSize) {
+BigObjectAllocator::BigObjectAllocator(size_t totalSize) {
     memoryBlock = new char[totalSize];
     freeRBtree = new RedBlackTree<char*, size_t>();
     freeRBtree->Insert(memoryBlock, totalSize);
@@ -12,13 +12,13 @@ GeneralAllocator::GeneralAllocator(size_t totalSize) {
     this->totalSize = totalSize;
 }
 
-GeneralAllocator::~GeneralAllocator() {
+BigObjectAllocator::~BigObjectAllocator() {
     delete[] memoryBlock;
     delete freeRBtree;
     delete firstNode;
 }
 
-void* GeneralAllocator::Allocate(size_t size) {
+void* BigObjectAllocator::Allocate(size_t size) {
     Node<char*, size_t>* freeBlockNode = freeRBtree->Search(size);
 
     if (freeBlockNode) {
@@ -43,13 +43,13 @@ void* GeneralAllocator::Allocate(size_t size) {
     }
 }
 
-void GeneralAllocator::Deallocate(void* ptr, size_t size) {
+void BigObjectAllocator::Deallocate(void* ptr, size_t size) {
     char* cptr = static_cast<char*>(ptr);
     if (memoryBlock <= cptr && memoryBlock + totalSize >= cptr && memoryBlock <= cptr + size && memoryBlock + totalSize >= cptr + size)
         AddNodeOnList(cptr, size);
 }
 
-void GeneralAllocator::DeleteNodeOnList(char* address) {
+void BigObjectAllocator::DeleteNodeOnList(char* address) {
     FreeBlock* curr = firstNode;
     if (curr == nullptr) return;
     while (curr->address != address) {
@@ -63,7 +63,7 @@ void GeneralAllocator::DeleteNodeOnList(char* address) {
     curr->next->pre = curr->pre;
     delete curr;
 }
-void GeneralAllocator::ModifyNodeOnList(char* oldAddress, char* address, size_t newSize) {
+void BigObjectAllocator::ModifyNodeOnList(char* oldAddress, char* address, size_t newSize) {
     FreeBlock* curr = firstNode;
     if (curr == nullptr) return;
     while (curr->address != oldAddress) {
@@ -75,7 +75,7 @@ void GeneralAllocator::ModifyNodeOnList(char* oldAddress, char* address, size_t 
     curr->address = address;
     freeRBtree->Insert(curr->address, curr->size);
 }
-void GeneralAllocator::AddNodeOnList(char* address, size_t size) {
+void BigObjectAllocator::AddNodeOnList(char* address, size_t size) {
     FreeBlock* curr = firstNode;
     if (curr == nullptr) {
         firstNode = new FreeBlock();
@@ -148,7 +148,7 @@ void GeneralAllocator::AddNodeOnList(char* address, size_t size) {
     }
 }
 
-void GeneralAllocator::MergeNodeOnList(FreeBlock* nodeOnList, char* address, size_t size) {
+void BigObjectAllocator::MergeNodeOnList(FreeBlock* nodeOnList, char* address, size_t size) {
     freeRBtree->Remove(nodeOnList->address, nodeOnList->size);
     if (nodeOnList->address > address) {
         nodeOnList->address = address;
@@ -157,7 +157,7 @@ void GeneralAllocator::MergeNodeOnList(FreeBlock* nodeOnList, char* address, siz
 
     freeRBtree->Insert(nodeOnList->address, nodeOnList->size);
 }
-void GeneralAllocator::MergeNodeOnList(FreeBlock* nodeOnList, char* address, size_t size, FreeBlock* nodeNextOnList) {
+void BigObjectAllocator::MergeNodeOnList(FreeBlock* nodeOnList, char* address, size_t size, FreeBlock* nodeNextOnList) {
     freeRBtree->Remove(nodeOnList->address, nodeOnList->size);
     freeRBtree->Remove(nodeNextOnList->address, nodeNextOnList->size);
     nodeOnList->size = nodeOnList->size + size + nodeNextOnList->size;
